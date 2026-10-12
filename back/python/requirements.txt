@@ -1,0 +1,12 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-dotenv==1.0.1
+psycopg2-binary==2.9.9
+pydantic==2.9.2
+
+# Só necessárias se o projeto usar app/integracoes/fabric_gold.py (Data
+# Lake / Microsoft Fabric — ver docs/diretrizes-uso-datalake.md). Descomente
+# se for o caso; requer também o ODBC Driver 18 for SQL Server instalado
+# na máquina/servidor onde a API roda (driver de sistema, não é pacote pip).
+# pyodbc==5.1.0
+# azure-identity==1.19.0

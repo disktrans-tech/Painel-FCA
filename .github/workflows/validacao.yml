@@ -1,0 +1,55 @@
+# =============================================================================
+# .github/workflows/validacao.yml
+# Validação automática de segurança e qualidade — Disktrans
+#
+# Dispara em:
+#   • push para `dev`          → feedback imediato ao colaborador
+#   • pull_request para `main` → bloqueia merge se houver erros
+# =============================================================================
+
+name: Validação de Código
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validar:
+    name: Checklist de Segurança e Qualidade
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Baixa o código ────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. Permissão de execução ─────────────────────────────────────────
+      - name: Permissão do script
+        run: chmod +x ./validate.sh
+
+      # ── 3. Roda a validação ──────────────────────────────────────────────
+      #    Saída 1 → job falha → GitHub bloqueia merge automaticamente
+      - name: Executar validate.sh
+        run: ./validate.sh
+
+      # ── 4. ESLint (só se o projeto React estiver configurado) ────────────
+      - name: Verificar ESLint
+        id: check_eslint
+        run: |
+          if [ -f "front/react/package.json" ] && grep -q '"eslint"' front/react/package.json; then
+            echo "has_eslint=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_eslint=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Instalar dependências (React)
+        if: steps.check_eslint.outputs.has_eslint == 'true'
+        run: npm ci --prefix front/react
+
+      - name: Executar ESLint
+        if: steps.check_eslint.outputs.has_eslint == 'true'
+        run: npx --prefix front/react eslint front/react/src --max-warnings=0
