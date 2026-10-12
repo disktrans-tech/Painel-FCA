@@ -1,0 +1,75 @@
+# =========================================================
+# Segredos e configuração local — NUNCA versionar
+# =========================================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+credentials.json
+config.local.js
+config.local.py
+
+# =========================================================
+# Python (backend)
+# =========================================================
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+pip-log.txt
+
+# =========================================================
+# Node (caso o frontend passe a usar build tools)
+# =========================================================
+node_modules/
+dist/
+build/
+.cache/
+package-lock.json.bak
+
+# =========================================================
+# Editor / Sistema operacional
+# =========================================================
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =========================================================
+# Logs
+# =========================================================
+*.log
+npm-debug.log*
+pip-debug.log*
+
+# =========================================================
+# Banco de dados — nunca dados/dumps reais no repo
+# Os arquivos de ESTRUTURA (banco/*.sql) SÃO versionados.
+# O que fica de fora é qualquer dump, backup ou export com
+# dados reais de clientes/colaboradores.
+# =========================================================
+*.dump
+*.bak
+*.sqlite3
+banco/dumps/
+banco/backups/
+banco/seeds/dados_reais*
+
+# =========================================================
+# Diversos
+# =========================================================
+*.tmp
+.tmp/
