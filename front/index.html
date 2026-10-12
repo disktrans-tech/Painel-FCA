@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Controle FCA · Trocas — Disktrans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variaveis.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="topo__logo">DISK<b>TRANS</b></div>
+    <div>
+      <h1 class="topo__titulo">Controle FCA · Trocas em aberto × entregues</h1>
+      <p class="topo__sub">Acompanhamento de efetividade das ações — aging em dias úteis, previsão de saída e evolução semanal/mensal</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="controles" aria-label="Filtros">
+      <div class="ctl">
+        <label for="refdate">Data de referência</label>
+        <input type="date" id="refdate">
+      </div>
+      <div class="ctl">
+        <span class="ctl__rotulo">Atendimento</span>
+        <div class="seg" id="scope" role="group" aria-label="Atendimento">
+          <button type="button" data-v="todos" class="on">Todos</button>
+          <button type="button" data-v="css">Só CSS</button>
+          <button type="button" data-v="disk">Só DISKTRANS</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <span class="ctl__rotulo">Controle de entrega</span>
+        <div class="seg" id="ctrl" role="group" aria-label="Controle de entrega">
+          <button type="button" data-v="in" class="on">Conta no aberto</button>
+          <button type="button" data-v="out">À parte</button>
+        </div>
+      </div>
+    </section>
+
+    <p class="cover" id="cover">Carregando base…</p>
+
+    <section id="app" hidden>
+      <nav class="tabs" id="tabs" aria-label="Visões">
+        <button type="button" data-t="resumo" class="on">Resumo</button>
+        <button type="button" data-t="atend">Por atendimento (aging D.U.)</button>
+        <button type="button" data-t="prev">Previsão de saída</button>
+        <button type="button" data-t="sem">Semanal + share</button>
+        <button type="button" data-t="mes">Mensal</button>
+      </nav>
+      <div id="view"></div>
+    </section>
+  </main>
+
+  <footer class="rodape">Fonte: disktrans_gold (Microsoft Fabric) · operacional.gld_fato_trocas · tipos Troca e Troca de Modelo. Sem dados de clientes.</footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

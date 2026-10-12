@@ -7,21 +7,21 @@ sem esperar que a pessoa saiba pedir isso.
 
 ## Estrutura fixa — não misture as camadas
 
+Stack escolhido neste projeto: **frontend vanilla** (HTML/CSS/JS, sem build) e **backend Python**.
+
 ```
-front/   → Fala só com a API em back/ (nunca com o banco direto).
-  vanilla/  HTML, CSS e JS puro, sem build.
-  react/    React + Vite.
-back/    → Único lugar com acesso ao banco.
-  python/   API em Python (FastAPI).
-  java/     API em Java (Spring Boot).
+front/   → Painel estático publicado no GitHub Pages (workflow pages.yml).
+           Nunca fala com o banco: lê front/data/trocas.json.
+back/    → Único lugar com acesso a dados.
+  sql/      Consultas somente leitura no Data Lake (disktrans_gold).
+  scripts/  atualizar_base.py: gera front/data/trocas.json (sem dado de cliente).
+  app/      Esqueleto FastAPI do template, para uma API futura.
 banco/   → Scripts SQL de estrutura (DDL). Nunca dados reais.
-docs/    → Documentação de apoio, se precisar.
+docs/    → Documentação de apoio (ver decisao-snapshot-estatico.md).
 ```
 
-Este template traz **os dois stacks funcionando em paralelo** (Python e Java
-no back/, vanilla e React no front/) só para permitir a escolha na hora de
-criar o projeto. Nenhum projeto real deve manter os dois — veja "Ao criar um
-projeto novo a partir deste template" mais abaixo.
+O repositório e o Pages são **públicos**: nada que identifique cliente ou pessoa pode entrar
+em `front/data/`. No frontend, monte o DOM com `el()` de `front/js/dom.js` (nunca `innerHTML`).
 
 Ao adicionar funcionalidade:
 

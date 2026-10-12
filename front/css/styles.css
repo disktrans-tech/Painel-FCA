@@ -1,0 +1,62 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--neutro); color: var(--carvao); font-family: Inter, system-ui, sans-serif; font-size: 0.875rem; }
+h1, h2, h3, th, .kpi__num { font-family: Barlow, sans-serif; }
+
+.topo { background: var(--azul); color: var(--branco); padding: 14px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.topo__logo { font-family: Barlow, sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: .5px; }
+.topo__logo b { color: var(--laranja); }
+.topo__titulo { margin: 0; font-weight: 700; font-size: 0.95rem; }
+.topo__sub { margin: 2px 0 0; font-size: 0.75rem; opacity: .85; }
+
+.wrap { max-width: 1280px; margin: 0 auto; padding: 16px 16px 40px; }
+.controles { background: var(--branco); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+.ctl { display: flex; flex-direction: column; gap: 4px; }
+.ctl label, .ctl__rotulo { font-size: 0.7rem; font-weight: 600; color: var(--texto2); text-transform: uppercase; letter-spacing: .4px; }
+.ctl input { padding: 8px 10px; border: 1px solid var(--borda); border-radius: 8px; font: inherit; background: var(--branco); }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--borda); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: var(--branco); padding: 8px 12px; cursor: pointer; font: inherit; color: var(--texto2); }
+.seg button.on { background: var(--azul); color: var(--branco); font-weight: 600; }
+.cover { font-size: 0.75rem; color: var(--texto2); margin: -6px 0 14px; }
+.cover b { color: var(--carvao); }
+
+.tabs { display: flex; gap: 4px; overflow-x: auto; margin-bottom: 14px; border-bottom: 2px solid var(--borda); }
+.tabs button { border: 0; background: none; padding: 10px 14px; cursor: pointer; font: 600 0.875rem Barlow, sans-serif; color: var(--texto2); border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+.tabs button.on { color: var(--azul); border-color: var(--laranja); }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.kpi { background: var(--branco); border: 1px solid var(--borda); border-radius: 12px; padding: 14px 16px; }
+.kpi__lab { font-size: 0.7rem; text-transform: uppercase; letter-spacing: .4px; color: var(--texto2); font-weight: 600; }
+.kpi__num { font-size: 1.4rem; font-weight: 700; margin-top: 4px; line-height: 1; }
+.kpi__hint { font-size: 0.7rem; color: var(--texto2); margin-top: 4px; }
+.kpi--alert .kpi__num { color: var(--vermelho); }
+.kpi--good .kpi__num { color: var(--ok); }
+
+.card { background: var(--branco); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+.card h2 { margin: 0 0 4px; font-size: 1.05rem; color: var(--azul); }
+.card__desc { font-size: 0.75rem; color: var(--texto2); margin: 0 0 12px; }
+.tabscroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+th, td { padding: 7px 9px; text-align: right; border-bottom: 1px solid var(--borda); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { background: var(--neutro); font-size: 0.7rem; text-transform: uppercase; letter-spacing: .3px; position: sticky; top: 0; }
+tbody tr:hover { background: #f7fafd; }
+tfoot td { font-weight: 700; border-top: 2px solid var(--carvao); background: #fcfdff; }
+
+.cell { color: var(--branco); font-weight: 600; border-radius: 5px; display: inline-block; min-width: 34px; padding: 2px 6px; text-align: center; }
+.muted { color: var(--texto2); }
+.up { color: var(--vermelho); }
+.down { color: var(--verde); }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.7rem; color: var(--texto2); margin-bottom: 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 5px; }
+.legend i { width: 13px; height: 13px; border-radius: 3px; display: inline-block; }
+.bar { height: 8px; width: 70px; border-radius: 5px; background: var(--borda); overflow: hidden; display: inline-block; vertical-align: middle; }
+.bar i { display: block; height: 100%; background: var(--azul2); }
+.note { font-size: 0.7rem; color: var(--texto2); margin-top: 8px; }
+.erro { color: var(--vermelho); }
+.rodape { text-align: center; font-size: 0.7rem; color: var(--texto2); padding: 0 16px 24px; }
+
+@media (min-width: 768px) {
+  .topo { padding: 14px 22px; }
+  .wrap { padding: 18px 22px 60px; }
+  .kpi__num { font-size: 1.6rem; }
+}
