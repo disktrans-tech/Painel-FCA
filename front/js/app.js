@@ -1,7 +1,9 @@
 // Ponto de entrada: carrega data/trocas.json e liga os controles
 import { fmtDate, addDays, d0 } from './datas.js';
-import { state } from './regras.js';
-import { renderResumo, renderAtend, renderPrev, renderSemanal, renderMensal } from './views.js';
+import { state, preparar } from './regras.js';
+import { renderResumo } from './views-resumo.js';
+import { renderAtend, renderPrev } from './views-atend.js';
+import { renderSemanal, renderMensal } from './views-periodo.js';
 
 const $ = s => document.querySelector(s);
 const VIEWS = { resumo: renderResumo, atend: renderAtend, prev: renderPrev, sem: renderSemanal, mes: renderMensal };
@@ -30,10 +32,10 @@ function setCover() {
 function decode(json) {
   const epoch = new Date(json.epoch + 'T00:00:00');
   const dia = n => (n === null ? null : d0(addDays(epoch, n)));
-  return json.rows.map(([a, ds, pz, de, sr, ab]) => ({
+  return json.rows.map(([a, ds, pz, de, sr, ab, dur]) => preparar({
     conc: json.atendimentos[a],
     dsolic: dia(ds), prazo: dia(pz), dentr: dia(de),
-    srom: json.status_romaneio[sr], aberta: ab === 1,
+    srom: json.status_romaneio[sr], aberta: ab === 1, dur: dur === undefined ? null : dur,
   }));
 }
 
@@ -44,6 +46,7 @@ async function carregar() {
     const json = await resp.json();
     state.rows = decode(json);
     const g = new Date(json.gerado_em);
+    state.dataBase = d0(g);
     state.geradoEm = fmtDate(g) + ' ' + String(g.getHours()).padStart(2, '0') + ':' + String(g.getMinutes()).padStart(2, '0');
     $('#app').hidden = false;
     setCover();
@@ -58,7 +61,8 @@ function ligarSegmento(id, chave) {
   $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
     $(id).querySelectorAll('button').forEach(x => x.classList.remove('on'));
     b.classList.add('on');
-    state[chave] = b.dataset[chave === 'tab' ? 't' : 'v'];
+    const valor = b.dataset[chave === 'tab' ? 't' : 'v'];
+    state[chave] = chave === 'soVenc' ? valor === 'sim' : valor;
     if (state.rows.length) render();
   }));
 }
@@ -74,5 +78,6 @@ ref.addEventListener('change', () => {
 
 ligarSegmento('#scope', 'scope');
 ligarSegmento('#ctrl', 'ctrl');
+ligarSegmento('#visao', 'soVenc');
 ligarSegmento('#tabs', 'tab');
 carregar();

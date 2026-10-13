@@ -48,7 +48,9 @@ prazo e entrega, status do romaneio e se está em aberto. Nenhum dado de cliente
 (nome, CNPJ, endereço, solicitante). O repositório e o link do Pages são públicos.
 
 Escopo da base: tipos Troca e Troca de Modelo (`gld_fato_trocas`, `codigo_tipo_solicitacao IN ('T','M')`),
-todas as em aberto + abertas ou entregues a partir de 01/08/2026.
+todas as em aberto + abertas ou entregues a partir de 01/08/2026. Data de entrega = `data_finalizacao_efetiva`
+(se vazia, `data_entrega_solicitacao`); SLA realizado = `duracao_atendimento_dias_uteis`.
+Dias úteis = segunda a sexta, como no gold (que não desconta feriados nacionais).
 
 ## Atualizar os dados
 
