@@ -50,7 +50,10 @@ function celAMais(g) {
 function celPrevVenc(g) {
   const dica = `Entram em vencido: ${n1(g.entradaVenc)}/dia · saída de vencidos: ${n1(g.saidaVenc)}/dia (20 D.U.)`;
   if (!g.venc) return el('td', { class: 'muted', title: dica }, '—');
-  if (g.prevVenc === null) return el('td', { class: 'up dica', title: dica }, 'não zera');
+  if (g.prevVenc === null) {
+    return el('td', { class: 'up dica', title: dica }, 'vencidos não caem',
+      el('span', { class: 'sub' }, `entra ${n0(g.entradaVenc)} × sai ${n0(g.saidaVenc)}/dia`));
+  }
   if (g.prevVenc > 120) return el('td', { class: 'up dica', title: dica }, '> 120 D.U.');
   return el('td', { class: 'dica', title: dica }, g.prevVenc + ' D.U.');
 }
@@ -111,7 +114,7 @@ export function renderPrev() {
       el('div', { class: 'note' },
         el('p', {}, b('Saldo/dia: '), 'saída/dia (5 D.U.) − entrada/dia (5 D.U.), em número inteiro. Positivo = sai mais do que entra (backlog caindo).'),
         el('p', {}, b('Fluxo dos vencidos (20 D.U.): '), '"Entram em vencido" = trocas que passaram do prazo sem entrega; "Saída de vencidos" = entregas feitas após o prazo. ',
-          b('Prev. zerar vencidos'), ' = vencidos ÷ (saída de vencidos − entrada em vencido); "não zera" quando entra mais do que sai. Passe o mouse para ver os dois ritmos.'),
+          b('Prev. zerar vencidos'), ' = vencidos ÷ (saída de vencidos − entrada em vencido); "vencidos não caem" quando entram em vencido tantas ou mais trocas do que saem (os dois ritmos aparecem embaixo).'),
         el('p', {}, b('A mais/dia: '), 'para zerar em 1 semana é preciso entregar os vencidos de hoje + os que vão vencer durante a semana (ritmo de entrada em vencido × 5). A mais/dia = esse total ÷ 5 − saída de vencidos/dia.'),
         el('p', {}, b('SLA realizado: '), 'média de dias úteis da abertura à entrega das trocas entregues nos últimos 20 D.U. (campo do gold).'),
         V ? el('p', {}, b('Só vencidos: '), 'saída = entregas feitas após o prazo; entrada = trocas que passaram a estar vencidas.') : null,
