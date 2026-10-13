@@ -35,8 +35,6 @@ export function renderAtend() {
 
 /* ============================ PREVISÃO DE SAÍDA ============================ */
 const prevDias = (qtd, rate) => (rate > 0 ? Math.ceil(qtd / rate) : null);
-const celDias = d => (d !== null ? d + ' D.U.' : muted('s/ ritmo'));
-const celZera = d => td(d !== null ? fmtDate(addBusDays(state.ref, d)) : '—', 'muted');
 const celTri = (valor, ...tris) => el('td', {}, valor, tris.filter(Boolean).map(t => [' ', t]));
 
 function celAMais(g) {
@@ -45,36 +43,34 @@ function celAMais(g) {
   return [td('+' + n1(g.aMaisDia), 'up'), td('+' + n0(g.aMaisSemana), 'up')];
 }
 function celPrevVenc(g) {
-  if (!g.venc) return td('—', 'muted');
-  if (g.prevVenc === null) return td('não zera', 'up');
-  return g.prevVenc + ' D.U.';
+  const dica = `Entram em vencido: ${n1(g.entradaVenc)}/dia · saída de vencidos: ${n1(g.saidaVenc)}/dia (20 D.U.)`;
+  if (!g.venc) return el('td', { class: 'muted', title: dica }, '—');
+  if (g.prevVenc === null) return el('td', { class: 'up dica', title: dica }, 'não zera');
+  return el('td', { class: 'dica', title: dica }, g.prevVenc + ' D.U.');
 }
 function celExcesso(g, ant) {
   if (g.excesso === null) return td('—', 'muted');
   const t = tri(g.excesso, ant ? ant.excesso : null, false, 'excesso hoje × mesma data da semana anterior');
-  return el('td', { class: g.excesso > 0 ? 'up' : 'down' }, (g.excesso > 0 ? '+' : '') + n0(g.excesso), t ? [' ', t] : null);
+  const dica = `Fila compatível = ${n1(g.entrada)}/dia × ${n1(g.sla)} D.U. = ${n0(g.fila)} trocas`;
+  return el('td', { class: (g.excesso > 0 ? 'up' : 'down') + ' dica', title: dica }, (g.excesso > 0 ? '+' : '') + n0(g.excesso), t ? [' ', t] : null);
 }
 
 function linhaFluxo(g, ant) {
-  const p5 = prevDias(g.total, g.saida5), p20 = prevDias(g.total, g.saida);
   return [
     g.at,
     celTri(b(n0(g.total)), tri(g.total, ant ? ant.total : null, false, 'em aberto hoje × mesma data da semana anterior')),
-    td(n0(g.venc), 'up'),
+    state.soVenc ? null : td(n0(g.venc), 'up'),
     celTri(n1(g.saida5),
       tri(g.saida5, g.saida, true, 'ritmo recente (5 D.U.) × ritmo do mês (20 D.U.)'),
       tri(g.saida5, g.saida5ant, true, 'últimos 5 D.U. × os 5 D.U. da semana anterior')),
-    celDias(p5), celZera(p5),
-    n1(g.saida), celDias(p20), celZera(p20),
+    n1(g.saida),
     n1(g.entrada),
     td((g.saldo > 0 ? '+' : '') + n1(g.saldo), g.saldo > 0 ? 'down' : g.saldo < 0 ? 'up' : 'muted'),
-    n1(g.entradaVenc), n1(g.saidaVenc),
     celPrevVenc(g),
     ...celAMais(g),
     g.sla !== null ? n1(g.sla) + ' D.U.' : td('—', 'muted'),
-    g.fila !== null ? n0(g.fila) : td('—', 'muted'),
     celExcesso(g, ant),
-  ];
+  ].filter(c => c !== null);
 }
 
 export function renderPrev() {
@@ -90,12 +86,11 @@ export function renderPrev() {
   const rotEnt = V ? 'Entrada em vencido/dia' : 'Entrada média/dia';
   const rotSai = V ? 'Saída de vencidos' : 'Saída';
 
-  const cab = ['Atendimento', V ? 'Vencidos' : 'Em aberto', 'Venc.',
-    `${rotSai}/dia (5 D.U.)`, 'Prev. recente', 'Zera ~',
-    `${rotSai} média/dia (20 D.U.)`, 'Prev. mensal', 'Zera ~',
-    rotEnt, 'Saldo/dia', 'Entram em vencido/dia', 'Saída de vencidos/dia', 'Prev. zerar vencidos',
+  const cab = ['Atendimento', V ? 'Vencidos' : 'Em aberto', V ? null : 'Venc.',
+    `${rotSai}/dia (5 D.U.)`, `${rotSai} média/dia (20 D.U.)`,
+    rotEnt, 'Saldo/dia', 'Prev. zerar vencidos',
     'A mais/dia (zerar em 1 sem.)', 'A mais na semana',
-    'SLA realizado', 'Fila compatível', 'Excesso de fila'];
+    'SLA realizado', 'Excesso de fila'].filter(Boolean);
 
   return frag(
     kpis(null,
@@ -113,13 +108,12 @@ export function renderPrev() {
       'Ordenado por em aberto (maior → menor). Taxas por dia útil; janela termina no último dia completo da base. ▲ verde = melhorou · ▼ vermelho = piorou (passe o mouse no triângulo para ver a comparação).',
       tabela(cab, atual.map(g => linhaFluxo(g, anterior[g.at])), linhaFluxo(tot, totAnt)),
       el('div', { class: 'note' },
-        el('p', {}, b('Prev. recente / mensal: '), 'em aberto ÷ saída por dia (sem considerar novas entradas).'),
         el('p', {}, b('Saldo/dia: '), 'saída média − entrada média (20 D.U.). Positivo = backlog caindo.'),
         el('p', {}, b('Fluxo dos vencidos (20 D.U.): '), '"Entram em vencido" = trocas que passaram do prazo sem entrega; "Saída de vencidos" = entregas feitas após o prazo. ',
-          b('Prev. zerar vencidos'), ' = vencidos ÷ (saída de vencidos − entrada em vencido); "não zera" quando entra mais do que sai.'),
-        el('p', {}, b('A mais/dia: '), 'para zerar em 1 semana é preciso entregar os vencidos de hoje + os que vão vencer durante a semana (ritmo de entrada em vencido × 5). A mais/dia = esse total ÷ 5 − saída de vencidos/dia.'),
+          b('Prev. zerar vencidos'), ' = vencidos ÷ (saída de vencidos − entrada em vencido); "não zera" quando entra mais do que sai. Passe o mouse para ver os dois ritmos.'),
+        el('p', {}, b('A mais/dia: '), 'para zerar em 1 semana é preciso entregar os vencidos de hoje + os que vão vencer durante a semana (ritmo de entrada em vencido × 5). A mais/dia = esse total ÷ 5 − saída de vencidos/dia; A mais na semana = A mais/dia × 5.'),
         el('p', {}, b('SLA realizado: '), 'média de dias úteis da abertura à entrega das trocas entregues nos últimos 20 D.U. (campo do gold). ',
-          b('Fila compatível'), ' = entrada média/dia × SLA realizado. ', b('Excesso'), ' = em aberto − fila compatível.'),
+          b('Excesso de fila'), ' = em aberto − fila compatível (entrada média/dia × SLA realizado; passe o mouse para ver a conta).'),
         V ? el('p', {}, b('Só vencidos: '), 'saída = entregas feitas após o prazo; entrada = trocas que passaram a estar vencidas.') : null,
       )),
   );

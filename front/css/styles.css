@@ -48,6 +48,7 @@ tfoot td { font-weight: 700; border-top: 2px solid var(--carvao); background: #f
 .cell { color: var(--branco); font-weight: 600; border-radius: 5px; display: inline-block; min-width: 34px; padding: 2px 6px; text-align: center; }
 .cell--claro { color: var(--texto-claro-fundo); }
 .tri { font-size: 0.75rem; cursor: help; }
+.dica { cursor: help; text-decoration: underline dotted; text-underline-offset: 3px; }
 .tri--bom { color: var(--verde); }
 .tri--ruim { color: var(--vermelho); }
 .tri--igual { color: var(--texto2); }
