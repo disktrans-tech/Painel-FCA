@@ -104,7 +104,7 @@ export function aggAtend() {
 /* ---------------- métricas de fluxo por atendimento (aba Previsão) ---------------- */
 const JANELA = 20;
 function novoAcum(a) {
-  return { at: a, total: 0, venc: 0, ent: 0, sai5: 0, sai20: 0, sai5ant: 0, entVenc: 0, saiVenc: 0, saiTot: 0, durSoma: 0, durN: 0 };
+  return { at: a, total: 0, venc: 0, ent: 0, ent5: 0, sai5: 0, sai20: 0, sai5ant: 0, entVenc: 0, saiVenc: 0, saiTot: 0, durSoma: 0, durN: 0 };
 }
 
 // D = data da posição; atual = usa abertoAgora (só para a referência)
@@ -130,6 +130,7 @@ export function metricasFluxo(D, atual) {
       g.durSoma += dur; g.durN++;
     }
     if (saiu(r, ini5, fim)) get(a).sai5++;
+    if (entrou(r, ini5, fim)) get(a).ent5++;
     if (saiu(r, ini5ant, fimAnt)) get(a).sai5ant++;
     if (entrouEmVencido(r, ini20, fim)) get(a).entVenc++;
     if (saiuVencida(r, ini20, fim)) get(a).saiVenc++;
@@ -144,7 +145,9 @@ export function metricasFluxo(D, atual) {
 // (ritmo histórico de entrada em vencido). A mais/dia = (vencidos + entrada em vencido × 5) ÷ 5 − saída de vencidos/dia.
 export function calcularFluxo(g) {
   const entrada = g.ent / JANELA, saida = g.sai20 / JANELA, saida5 = g.sai5 / 5, saida5ant = g.sai5ant / 5;
-  const saldo = saida - entrada;
+  // saldo do momento: saída e entrada dos mesmos últimos 5 D.U.
+  const entrada5 = g.ent5 / 5;
+  const saldo = saida5 - entrada5;
   const entradaVenc = g.entVenc / JANELA, saidaVenc = g.saiVenc / JANELA, saldoVenc = saidaVenc - entradaVenc;
   const sla = g.durN ? g.durSoma / g.durN : null;
   const aMaisDia = (g.venc + entradaVenc * 5) / 5 - saidaVenc;
@@ -152,7 +155,7 @@ export function calcularFluxo(g) {
   // giro (lei de Little): dias úteis médios que uma troca fica vencida até ser entregue
   const giroVenc = saidaVenc > 0 ? g.venc / saidaVenc : null;
   return {
-    ...g, entrada, saida, saida5, saida5ant, saldo, entradaVenc, saidaVenc, saldoVenc, giroVenc, sla, aMaisDia,
+    ...g, entrada, entrada5, saida, saida5, saida5ant, saldo, entradaVenc, saidaVenc, saldoVenc, giroVenc, sla, aMaisDia,
     pctForaPrazo: g.saiTot ? g.saiVenc / g.saiTot : 0,
     aMaisSemana: aMaisDia * 5,
     prevVenc: saldoVenc > 0 ? Math.ceil(g.venc / saldoVenc) : null,
