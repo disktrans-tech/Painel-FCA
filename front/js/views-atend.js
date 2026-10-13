@@ -99,7 +99,10 @@ export function renderPrev() {
       kpi(`${rotSai} mensal (20 D.U.)`, n1(tot.saida) + '/dia', n0(tot.sai20) + ' entregas'),
       kpi(rotEnt, n1(tot.entrada) + '/dia', n0(tot.ent) + ' em 20 D.U.'),
       kpi('Saldo/dia', (tot.saldo > 0 ? '+' : '') + n1(tot.saldo), tot.saldo > 0 ? 'backlog caindo' : 'backlog crescendo', tot.saldo > 0 ? 'good' : 'alert'),
-      kpi('Vencidos: entram × saem/dia', n1(tot.entradaVenc) + ' × ' + n1(tot.saidaVenc), Math.abs(tot.saldoVenc) < 1 ? 'vencidos estáveis' : tot.saldoVenc > 0 ? 'vencidos diminuindo' : 'vencidos aumentando', tot.saldoVenc > 0 ? 'good' : 'alert'),
+      kpi('Entregas fora do prazo', Math.round(tot.pctForaPrazo * 100) + '%',
+        `~${n0(tot.entradaVenc)}/dia viram vencidas e ~${n0(tot.saidaVenc)}/dia saem · ` +
+        (Math.abs(tot.saldoVenc) < 5 ? 'estoque parado' : tot.saldoVenc > 0 ? 'estoque caindo' : 'estoque subindo'), 'alert'),
+      kpi('Giro do vencido', tot.giroVenc !== null ? '~' + n1(tot.giroVenc) + ' D.U.' : '—', 'tempo médio que uma troca fica vencida até sair'),
       kpi('A mais/dia p/ zerar vencidos em 1 semana', tot.aMaisDia > 0 ? '+' + n1(tot.aMaisDia) : '0', tot.aMaisDia > 0 ? '+' + n0(tot.aMaisSemana) + ' na semana' : 'ritmo atual já zera', tot.aMaisDia > 0 ? 'alert' : 'good'),
       kpi('Prev. otimista (recente)', t5 !== null ? t5 + ' D.U.' : '—', t5 !== null ? '~' + fmtDate(addBusDays(state.ref, t5)) : '', 'good'),
       kpi('Prev. conservadora (mensal)', t20 !== null ? t20 + ' D.U.' : '—', t20 !== null ? '~' + fmtDate(addBusDays(state.ref, t20)) : ''),

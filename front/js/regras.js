@@ -104,7 +104,7 @@ export function aggAtend() {
 /* ---------------- métricas de fluxo por atendimento (aba Previsão) ---------------- */
 const JANELA = 20;
 function novoAcum(a) {
-  return { at: a, total: 0, venc: 0, ent: 0, sai5: 0, sai20: 0, sai5ant: 0, entVenc: 0, saiVenc: 0, durSoma: 0, durN: 0 };
+  return { at: a, total: 0, venc: 0, ent: 0, sai5: 0, sai20: 0, sai5ant: 0, entVenc: 0, saiVenc: 0, saiTot: 0, durSoma: 0, durN: 0 };
 }
 
 // D = data da posição; atual = usa abertoAgora (só para a referência)
@@ -133,6 +133,7 @@ export function metricasFluxo(D, atual) {
     if (saiu(r, ini5ant, fimAnt)) get(a).sai5ant++;
     if (entrouEmVencido(r, ini20, fim)) get(a).entVenc++;
     if (saiuVencida(r, ini20, fim)) get(a).saiVenc++;
+    if (entre(r.dentr, ini20, fim)) get(a).saiTot++;
   });
 
   return Object.values(m).map(calcularFluxo);
@@ -148,8 +149,11 @@ export function calcularFluxo(g) {
   const sla = g.durN ? g.durSoma / g.durN : null;
   const aMaisDia = (g.venc + entradaVenc * 5) / 5 - saidaVenc;
   const fila = sla !== null ? entrada * sla : null;
+  // giro (lei de Little): dias úteis médios que uma troca fica vencida até ser entregue
+  const giroVenc = saidaVenc > 0 ? g.venc / saidaVenc : null;
   return {
-    ...g, entrada, saida, saida5, saida5ant, saldo, entradaVenc, saidaVenc, saldoVenc, sla, aMaisDia,
+    ...g, entrada, saida, saida5, saida5ant, saldo, entradaVenc, saidaVenc, saldoVenc, giroVenc, sla, aMaisDia,
+    pctForaPrazo: g.saiTot ? g.saiVenc / g.saiTot : 0,
     aMaisSemana: aMaisDia * 5,
     prevVenc: saldoVenc > 0 ? Math.ceil(g.venc / saldoVenc) : null,
     fila, excesso: fila !== null ? g.total - fila : null,
