@@ -35,7 +35,7 @@ export function renderResumo() {
   const p5 = previsao(total, r5.perDay), p20 = previsao(total, r20.perDay);
 
   const linha1 = kpis(null,
-    kpi(V ? 'Vencidos em aberto' : 'Em aberto (trocas)', n0(total), 'posição em ' + fmtDate(ref)),
+    kpi(V ? 'Vencidos em aberto' : 'Em aberto (T/M/E)', n0(total), 'posição em ' + fmtDate(ref)),
     V ? null : kpi('Vencidos (D.U.)', n0(venc), pct(venc, total) + '% do aberto', 'alert'),
     V ? null : kpi('Em dia', n0(total - venc), pct(total - venc, total) + '% do aberto', 'good'),
     kpi('Controle de entrega', n0(ctrl), 'já vão sair'),
