@@ -52,12 +52,13 @@ def main():
             dia(r["data_entrega"]),
             sroms.index(s),
             1 if r["status_linha"] == "Aberta" else 0,
+            int(float(r["dur_du"])) if r["dur_du"] else None,
         ])
 
     payload = {
         "gerado_em": datetime.now().isoformat(timespec="minutes"),
         "epoch": EPOCH.isoformat(),
-        "colunas": ["atendimento", "data_solic", "prazo", "data_entrega", "status_romaneio", "aberta"],
+        "colunas": ["atendimento", "data_solic", "prazo", "data_entrega", "status_romaneio", "aberta", "dur_du"],
         "atendimentos": atend,
         "status_romaneio": sroms,
         "rows": rows,
