@@ -16,7 +16,7 @@ function setCover() {
   const cover = $('#cover');
   cover.textContent = '';
   const partes = [
-    ['Base: ', state.rows.length.toLocaleString('pt-BR') + ' trocas'],
+    ['Base: ', state.rows.length.toLocaleString('pt-BR') + ' solicitações (T/M/E)'],
     [' · em aberto: ', state.rows.filter(r => r.aberta).length.toLocaleString('pt-BR')],
     [' · atualizada em ', state.geradoEm],
     [' · referência ', fmtDate(state.ref)],
